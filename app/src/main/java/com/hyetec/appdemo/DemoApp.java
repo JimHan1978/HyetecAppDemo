@@ -1,0 +1,74 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.hyetec.appdemo;
+
+import android.app.Activity;
+import android.app.Application;
+
+import com.hyetec.appdemo.di.component.AppComponent;
+import com.hyetec.daggerlibrary.DaggerDelegate;
+
+import javax.inject.Inject;
+
+import androidx.fragment.app.Fragment;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+import timber.log.Timber;
+
+
+public class DemoApp extends Application implements HasActivityInjector, HasSupportFragmentInjector {
+
+    @Inject
+    DispatchingAndroidInjector<Activity> mActivityInjector;
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> mFragmentInjector;
+
+    private DaggerDelegate mDaggerDelegate;
+    private AppComponent mAppComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
+        //Library 的依赖注入（顶级）
+        mDaggerDelegate = new DaggerDelegate(this);
+        mDaggerDelegate.onCreate();
+
+        //注入主 Module 中（该 Module 全局）
+//        mAppComponent = DaggerAppComponent.builder()
+//                .daggerComponent(getDaggerComponent())
+//                .build();
+//        mAppComponent.inject(this);
+
+        //AppInjector.init(this);
+    }
+
+    @Override
+    public DispatchingAndroidInjector<Activity> activityInjector() {
+        return mActivityInjector;
+    }
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return this.mFragmentInjector;
+    }
+
+}

@@ -26,18 +26,9 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-@Module(includes = {ViewModelFactoryModule.class,ViewModelModule.class,BaseActivityModule.class,FragmentBuildersModule.class})
+@Module(includes = {ViewModelFactoryModule.class,ViewModelModule.class})
 public class AppModule {
-    @Singleton
-    @Provides
-    WebService provideWebService() {
-        return new Retrofit.Builder()
-                .baseUrl("http://192.168.2.206:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                //.addCallAdapterFactory(new LiveDataCallAdapterFactory())
-                .build()
-                .create(WebService.class);
-    }
+
 
     /*@Singleton @Provides
     GithubDb provideDb(Application app) {

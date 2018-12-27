@@ -18,6 +18,8 @@ package com.hyetec.appdemo.di.component;
 
 import com.hyetec.appdemo.DemoApp;
 import com.hyetec.appdemo.di.module.AppModule;
+import com.hyetec.appdemo.di.module.BaseActivityModule;
+import com.hyetec.appdemo.di.module.FragmentBuildersModule;
 import com.hyetec.daggerlibrary.di.component.DaggerComponent;
 import com.hyetec.daggerlibrary.di.scope.AppScope;
 
@@ -26,7 +28,7 @@ import dagger.Component;
 @AppScope
 @Component(dependencies = DaggerComponent.class,
         modules = {
-        AppModule.class
+        AppModule.class,BaseActivityModule.class,FragmentBuildersModule.class
 })
 public interface AppComponent {
 

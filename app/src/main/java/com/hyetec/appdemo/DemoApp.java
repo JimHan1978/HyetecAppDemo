@@ -20,7 +20,9 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.hyetec.appdemo.di.component.AppComponent;
+import com.hyetec.appdemo.di.component.DaggerAppComponent;
 import com.hyetec.daggerlibrary.DaggerDelegate;
+import com.hyetec.daggerlibrary.di.component.DaggerComponent;
 
 import javax.inject.Inject;
 
@@ -54,10 +56,10 @@ public class DemoApp extends Application implements HasActivityInjector, HasSupp
         mDaggerDelegate.onCreate();
 
         //注入主 Module 中（该 Module 全局）
-//        mAppComponent = DaggerAppComponent.builder()
-//                .daggerComponent(getDaggerComponent())
-//                .build();
-//        mAppComponent.inject(this);
+        mAppComponent = DaggerAppComponent.builder()
+                .daggerComponent(getDaggerComponent())
+                .build();
+        mAppComponent.inject(this);
 
         //AppInjector.init(this);
     }
@@ -71,4 +73,8 @@ public class DemoApp extends Application implements HasActivityInjector, HasSupp
         return this.mFragmentInjector;
     }
 
+
+    public DaggerComponent getDaggerComponent() {
+        return this.mDaggerDelegate.getComponent();
+    }
 }

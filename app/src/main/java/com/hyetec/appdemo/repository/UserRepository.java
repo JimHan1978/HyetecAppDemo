@@ -1,8 +1,12 @@
 package com.hyetec.appdemo.repository;
 
+import android.app.Application;
+
 import com.hyetec.appdemo.api.ApiResponse;
 import com.hyetec.appdemo.api.WebService;
 import com.hyetec.appdemo.vo.User;
+import com.hyetec.repository.IRepositoryManager;
+import com.hyetec.repository.utils.RepositoryUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,15 +17,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-@Singleton
 public class UserRepository {
     private LiveData<User> user;
 
-    private final WebService webService;
+    //private final WebService webService;
+    private IRepositoryManager mRepositoryManager;
 
     @Inject
-    public UserRepository(WebService webService) {
-        this.webService = webService;
+    public UserRepository(Application application) {
+        this.mRepositoryManager = RepositoryUtils.INSTANCE
+                .obtainRepositoryComponent(application)
+                .repositoryManager();
     }
 
     public LiveData<User> loadUser(String userId) {
@@ -29,7 +35,7 @@ public class UserRepository {
         //userCache.put(userId, data);
         // this is still suboptimal but better than before.
         // a complete implementation must also handle the error cases.
-        webService.getUser(userId).enqueue(new Callback<User>() {
+        mRepositoryManager.obtainRetrofitService(WebService.class).getUser(userId).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 data.setValue(response.body());

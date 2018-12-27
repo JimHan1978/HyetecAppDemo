@@ -3,8 +3,9 @@ package com.hyetec.daggerlibrary;
 import android.app.Application;
 
 import com.hyetec.daggerlibrary.di.component.DaggerComponent;
-import com.hyetec.daggerlibrary.di.module.DaggerModule;
 import com.hyetec.daggerlibrary.di.component.DaggerDaggerComponent;
+import com.hyetec.daggerlibrary.di.module.DaggerModule;
+import com.hyetec.repository.RepositoryInjector;
 
 import javax.inject.Inject;
 
@@ -22,13 +23,25 @@ public class DaggerDelegate {
     private DaggerComponent mComponent;
     private final Application mApplication;
 
+    /**
+     * {@link RepositoryInjector}
+     */
+    private RepositoryInjector mRepositoryInjector;
+
+
     public DaggerDelegate(Application application) {
         mApplication = application;
+
+        if (mRepositoryInjector == null) {
+            mRepositoryInjector = new RepositoryInjector(application);
+        }
     }
 
     public void onCreate() {
         Timber.plant(new Timber.DebugTree());
 
+        //Repository inject
+        mRepositoryInjector.onCreate(mApplication);
         //顶级依赖注入
         mComponent = DaggerDaggerComponent.builder()
                 .daggerModule(new DaggerModule(mApplication))
